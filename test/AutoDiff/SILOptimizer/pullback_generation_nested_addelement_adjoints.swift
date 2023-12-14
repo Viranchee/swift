@@ -142,3 +142,14 @@ func multipleExtractionsFromSameStruct(_ model: SmallTestModel) -> Float{
 // CHECK:   debug_value %39 : $SmallTestModel.TangentVector, let, name "model", argno 1 
 // CHECK:   return %39 : $SmallTestModel.TangentVector      
 // CHECK: }
+
+// Helps increase code coverage
+// Copy of differentiation_diagnostics.swift:fragileFuncWithGradient, but 
+public func mirror(_ x: Float) -> Float { x }
+
+@inlinable
+func useInlineFunc() {
+  // expected-error @+2 {{function is not differentiable}}
+  // expected-note @+1 {{differentiated functions in '@inlinable' functions must be marked '@differentiable' or have a public '@derivative'}}
+  _ = gradient(at: 0, of: mirror)
+}
